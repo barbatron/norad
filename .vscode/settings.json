@@ -1,0 +1,8 @@
+{
+  "editor.formatOnSave": true,
+  "typescript.format.enable": true,
+  "javascript.format.enable": false,
+  "files.autoSave": "onWindowChange",
+  "svelte.enable-ts-plugin": true,
+  "svelte.plugin.svelte.defaultScriptLanguage": "ts"
+}
