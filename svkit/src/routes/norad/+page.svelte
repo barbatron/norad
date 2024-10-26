@@ -9,6 +9,8 @@
 	// Bindings
 	let mapElement: HTMLElement;
 
+	let map = $state<google.maps.Map>();
+
 	onMount(async function () {
 		const loader = new Loader({
 			apiKey: PUBLIC_GOOGLEMAPS_API_KEY,
@@ -17,13 +19,24 @@
 
 		const { Map } = await loader.importLibrary('maps');
 
-		let hoggarnMap = new Map(mapElement, {
+		map = new Map(mapElement, {
 			center: { lat: 59.3696333, lng: 18.2889347 },
 			zoom: 16
 		});
-
-		setInterval(() => console.log('zoom level', hoggarnMap.getZoom()), 1000);
 	});
+
+	const zoom = $derived(map?.getZoom());
 </script>
 
-<div bind:this={mapElement} style:height={'100%'} style:width={'100%'} />
+<h1>{zoom}</h1>
+<div id="map" bind:this={mapElement} style:height={'80vh'} style:width={'100vw'}></div>
+
+<style>
+	h1 {
+		color: red;
+	}
+	div {
+		margin: 0;
+		height: 100%;
+	}
+</style>
