@@ -3,6 +3,9 @@
   import viteLogo from '/vite.svg'
   import Counter from './lib/Counter.svelte'
   import LoginButton from './lib/LoginButton.svelte';
+  import Session from './lib/Session.svelte';
+  import { currentSession } from './auth'
+  const session = currentSession()
 </script>
 
 <main>
@@ -18,7 +21,8 @@
 
   <div class="card">
     <Counter />
-    <LoginButton />
+    {session && Session}
+    {!session && LoginButton}
   </div>
 
   <p>

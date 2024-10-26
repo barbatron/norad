@@ -1,16 +1,26 @@
 <script lang="ts">
-  import {createAccount, testLogin } from '../auth'
+  import { createAccount, login } from "../auth";
+  import path from "path";
+  const emailInput = () =>
+    document.getElementById("create-email")! as HTMLInputElement;
+  const passwordInput = () =>
+    document.getElementById("create-password")! as HTMLInputElement;
+  const emailPassword = () => ({
+    email: emailInput().value,
+    password: passwordInput().value,
+  });
   const create = async () => {
-    await createAccount({ email: document.getElementById('#create-email')!.innerText, password: document.getElementById('#create-password')!.innerText });
-  }
-  const login = async () => {
-    const session = await testLogin({ email: document.getElementById('#create-email')!.innerText, password: document.getElementById('#create-password')!.innerText });
-    // Go somewhere
-  }
+    const result = await createAccount(emailPassword());
+    return result;
+  };
+  const loginEmailPassword = async () => {
+    const session = await login(emailPassword());
+    return session;
+  };
 </script>
 
 <form on:submit={create}>
   <input id="create-email" type="email" />
   <input id="create-password" type="password" />
 </form>
-<button on:click={login}>login</button>
+<button on:click={loginEmailPassword}>login</button>
