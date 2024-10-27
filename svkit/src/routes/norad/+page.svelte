@@ -6,6 +6,8 @@
 	import * as publicEnv from '$env/static/public';
 	const { PUBLIC_GOOGLEMAPS_API_KEY } = publicEnv;
 
+	import mapOverlay from '../../hoggarn.json';
+
 	// Bindings
 	let mapElement: HTMLElement;
 
@@ -19,24 +21,43 @@
 
 		const { Map } = await loader.importLibrary('maps');
 
+		const mapCenter = { lat: 59.3696333, lng: 18.2889347 };
+
 		map = new Map(mapElement, {
-			center: { lat: 59.3696333, lng: 18.2889347 },
-			zoom: 16
+			mapId: '130a5dfbf103f118', // google.maps.Map.DEMO_MAP_ID,
+			center: mapCenter,
+			zoom: 16,
+			// panControl: false // show/hide pan ui overlay
+			colorScheme: google.maps.ColorScheme.DARK
+		});
+
+		// Map borders overlay
+		const features = map.data.addGeoJson(mapOverlay);
+		const mapBorderStyle: google.maps.Data.StyleOptions = {
+			fillColor: 'red',
+			fillOpacity: 0.1,
+			strokeOpacity: 0.7,
+			strokeColor: 'red',
+			strokeWeight: 2
+		};
+		features.forEach((f) => map?.data.overrideStyle(f, mapBorderStyle));
+
+		// Marker
+		const markerPos = [59.370868, 18.289363];
+		const marker = new google.maps.marker.AdvancedMarkerElement({
+			map: map,
+			position: { lat: markerPos[0], lng: markerPos[1] },
+			title: 'Map feature'
 		});
 	});
-
-	const zoom = $derived(map?.getZoom());
 </script>
 
-<h1>{zoom}</h1>
-<div id="map" bind:this={mapElement} style:height={'80vh'} style:width={'100vw'}></div>
+<div id="map" bind:this={mapElement} style:height={'100%'} style:width={'100%'}></div>
 
 <style>
-	h1 {
-		color: red;
-	}
-	div {
+	div#map {
 		margin: 0;
 		height: 100%;
+		min-height: 90vh;
 	}
 </style>
