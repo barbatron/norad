@@ -1,12 +1,14 @@
 <script lang="ts">
-	const { data } = $props();
-	console.log('[page: /norad/admin', { account: data.account });
-
 	import { onMount } from 'svelte';
 	import { Loader } from '@googlemaps/js-api-loader';
 	import { PUBLIC_GOOGLEMAPS_API_KEY } from '$env/static/public';
+	import { logger } from '$lib/observability.js';
 
-	import { hoggarn } from '$lib/maps';
+	const console = logger('admin page');
+
+	const { data } = $props();
+	console.log({ data });
+	const { hoggarn } = data;
 
 	// Bindings
 	let mapElement: HTMLElement;
@@ -31,7 +33,8 @@
 		});
 
 		// Map borders overlay
-		const features = map.data.addGeoJson(hoggarn);
+		console.log('hoggarn is', hoggarn);
+		const features = map.data.addGeoJson(hoggarn.features);
 		const mapBorderStyle: google.maps.Data.StyleOptions = {
 			fillColor: 'red',
 			fillOpacity: 0.1,
@@ -40,9 +43,12 @@
 			strokeWeight: 2
 		};
 		features.forEach((f) => map?.data.overrideStyle(f, mapBorderStyle));
+		console.log('features styled');
 
 		// Marker
 		const markerPos = [59.370868, 18.289363];
+		console.log('creating marker');
+
 		const marker = new google.maps.marker.AdvancedMarkerElement({
 			map: map,
 			position: { lat: markerPos[0], lng: markerPos[1] },
