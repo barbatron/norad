@@ -2,13 +2,18 @@
 	import { account, ID } from '$lib/appwrite';
 	import { OAuthProvider } from 'appwrite';
 	import { resolveRoute } from '$app/paths';
+	import { logger } from '$lib/observability';
+	import { goto } from '$app/navigation';
 
+	const console = logger('login page');
 	let loggedInUser: any = null;
-	console.log('[page: login]', loggedInUser);
+
+	console.log({ loggedInUser });
 
 	async function login(email: string, password: string) {
 		await account.createEmailPasswordSession(email, password);
 		loggedInUser = await account.get();
+		if (loggedInUser) goto('/norad');
 	}
 
 	async function register(email: string, password: string) {

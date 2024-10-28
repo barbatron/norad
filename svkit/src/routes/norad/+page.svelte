@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { logger } from '$lib/observability';
+	const console = logger('norad page');
 
 	const { data } = $props();
 
-	console.log('[page: /norad]', { propsData: data });
+	console.log({ propsData: data });
 
 	const { account } = data;
 

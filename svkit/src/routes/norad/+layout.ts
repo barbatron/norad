@@ -1,27 +1,17 @@
 import * as appwrite from "$lib/appwrite";
+import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
+import { logger } from "$lib/observability";
+import { getAccount } from "$lib/auth";
 
-// Turn off SSR globally, turning the project into a static site
-// export const prerender = false;
-// export const ssr = false;
-
-const getAccount = async () => {
-    try {
-        console.log('[norad layout] get account')
-        const account = await appwrite.account.get();
-        console.log('[norad layout] got account', account)
-        return {
-            account
-        };
-    } catch {
-        console.log('[norad layout] no account')
-        return {
-            account: null,
-        };
-    }
-}
+const console = logger('norad layout');
 
 export const load: LayoutLoad = async () => {
-    const account = await getAccount()
-    return account
+  const account = await getAccount()
+  console.log(!!account ? '✅' : '🚫', { gotAccount: !!account });
+
+  if (!account) {
+    throw redirect(303, '/login');
+  }
+  return account
 };
