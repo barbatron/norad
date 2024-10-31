@@ -7,7 +7,7 @@ declare global {
 		// interface Error {}
 		// interface Locals {}
 		interface PageData {
-			account?: Account;
+			account: Account | null;
 		}
 		// interface PageState {}
 		// interface Platform {}
