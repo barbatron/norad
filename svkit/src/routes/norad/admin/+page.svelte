@@ -29,29 +29,29 @@
 		console.log('features styled');
 
 		// Marker
-		const markerPos = [59.370868, 18.289363];
-		console.log('creating marker');
+		//const markerPos = [59.370868, 18.289363];
+		//console.log('creating marker');
 
-		const marker = new google.maps.marker.AdvancedMarkerElement({
-			map: map,
-			position: { lat: markerPos[0], lng: markerPos[1] },
-			title: 'Map feature'
-		});
-		console.log('marker created', marker);
+		// const marker = new google.maps.marker.AdvancedMarkerElement({
+		//	map: map,
+		//	position: { lat: markerPos[0], lng: markerPos[1] },
+		//	title: 'Map feature'
+		//});
+		//console.log('marker created', marker);
+    return map;
 	};
 
 	let mapCenter = $state({ lat: 59.3696333, lng: 18.2889347 });
 
 	onMount(async function () {
-		const map = new google.maps.Map(mapElement, {
+		map = populateMap(new google.maps.Map(mapElement, {
 			mapId: PUBLIC_GOOGLEMAPS_MAP_ID, // google.maps.Map.DEMO_MAP_ID,
 			center: mapCenter,
 			zoom: 16,
 			// panControl: false // show/hide pan ui overlay
 			colorScheme: google.maps.ColorScheme.DARK
-		});
-		populateMap(map);
-	});
+		}));
+});
 </script>
 
 <div id="map" bind:this={mapElement} style:height={'100%'} style:width={'100%'}></div>
