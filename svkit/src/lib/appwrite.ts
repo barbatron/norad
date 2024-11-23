@@ -1,4 +1,4 @@
-import { PUBLIC_APPWRITE_PROJECT as appWriteProject } from '$env/static/public';
+import { PUBLIC_APPWRITE_PROJECT as appWriteProject } from "$env/static/public";
 import { Account, Client, ID } from "appwrite";
 
 export { Account, Client, ID };
