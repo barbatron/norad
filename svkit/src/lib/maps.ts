@@ -1,1 +1,2 @@
-export { default as hoggarn } from "./geojson/hoggarn.json";
+import hoggarGeoJson from './geojson/hoggarn.json';
+export const hoggarnGeoJson = hoggarGeoJson;

@@ -6,13 +6,17 @@
 	import { goto } from '$app/navigation';
 
 	const console = logger('login page');
-	let loggedInUser: any = null;
+
+	const { data } = $props();
+	console.log('login page data', data);
+	const {
+		account: { account: loggedInUser }
+	} = data;
 
 	console.log({ loggedInUser });
 
 	async function login(email: string, password: string) {
 		await account.createEmailPasswordSession(email, password);
-		loggedInUser = await account.get();
 		if (loggedInUser) goto('/norad');
 	}
 
@@ -38,7 +42,7 @@
 
 	async function logout() {
 		await account.deleteSession('current');
-		loggedInUser = null;
+		goto('/');
 	}
 
 	const loginOauth = async () => {
@@ -79,9 +83,9 @@
 	{loggedInUser ? `Logged in as ${loggedInUser.name}` : 'Not logged in'}
 </p>
 
-<button on:click={loginOauth}>login using google</button>
+<button onclick={loginOauth}>login using google</button>
 
-<form on:submit={submitEmailPassword}>
+<form onsubmit={submitEmailPassword}>
 	<input type="email" placeholder="Email" name="email" required />
 	<input type="password" placeholder="Password" name="password" required />
 
@@ -89,4 +93,4 @@
 	<button type="submit" data-type="register">Register</button>
 </form>
 
-<button on:click={logout}>Logout</button>
+<button onclick={logout}>Logout</button>

@@ -1,37 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Loader } from '@googlemaps/js-api-loader';
-	import { PUBLIC_GOOGLEMAPS_API_KEY } from '$env/static/public';
+	import { PUBLIC_GOOGLEMAPS_MAP_ID } from '$env/static/public';
 	import { logger } from '$lib/observability.js';
 
 	const console = logger('admin page');
 
 	const { data } = $props();
-	console.log({ data });
-	const { hoggarn } = data;
+	console.log('$props.data', data);
+	const { hoggarn, mapsLibrary } = data;
 
 	// Bindings
 	let mapElement: HTMLElement;
 
 	let map = $state<google.maps.Map>();
 
-	onMount(async function () {
-		const loader = new Loader({
-			apiKey: PUBLIC_GOOGLEMAPS_API_KEY,
-			version: 'weekly'
-		});
-
-		const { Map } = await loader.importLibrary('maps');
-
-		const mapCenter = { lat: 59.3696333, lng: 18.2889347 };
-		map = new Map(mapElement, {
-			mapId: '130a5dfbf103f118', // google.maps.Map.DEMO_MAP_ID,
-			center: mapCenter,
-			zoom: 16,
-			// panControl: false // show/hide pan ui overlay
-			colorScheme: google.maps.ColorScheme.DARK
-		});
-
+	const populateMap = (map: google.maps.Map) => {
 		// Map borders overlay
 		console.log('hoggarn is', hoggarn);
 		const features = map.data.addGeoJson(hoggarn.features);
@@ -42,7 +25,7 @@
 			strokeColor: 'red',
 			strokeWeight: 2
 		};
-		features.forEach((f) => map?.data.overrideStyle(f, mapBorderStyle));
+		map.data.setStyle(mapBorderStyle);
 		console.log('features styled');
 
 		// Marker
@@ -54,6 +37,20 @@
 			position: { lat: markerPos[0], lng: markerPos[1] },
 			title: 'Map feature'
 		});
+		console.log('marker created', marker);
+	};
+
+	let mapCenter = $state({ lat: 59.3696333, lng: 18.2889347 });
+
+	onMount(async function () {
+		const map = new google.maps.Map(mapElement, {
+			mapId: PUBLIC_GOOGLEMAPS_MAP_ID, // google.maps.Map.DEMO_MAP_ID,
+			center: mapCenter,
+			zoom: 16,
+			// panControl: false // show/hide pan ui overlay
+			colorScheme: google.maps.ColorScheme.DARK
+		});
+		populateMap(map);
 	});
 </script>
 
