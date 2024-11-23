@@ -7,7 +7,31 @@
 
 	const { data } = $props();
 	console.log('$props.data', data);
-	const { hoggarn, mapsLibrary } = data;
+	const { map: loadedMap, markerLibrary } = data;
+
+	// Pick out some basics
+	const commandCenter = loadedMap.features.find((f) => f.properties?.type === 'command_center');
+	if (!commandCenter) throw Error('No command center found in map data');
+	/*
+    {
+      "type": "Feature",
+      "properties": {
+        "type": "command_center",
+        "id": "saltet"
+      },
+      "geometry": {
+        "coordinates": [
+          18.086257315067485,
+          59.254397582091656
+        ],
+        "type": "Point"
+      },
+      "id": 1
+    }
+    */
+	console.log('commandCenter', commandCenter);
+	const [center_long, center_lat] = (commandCenter.geometry as GeoJSON.Point)
+		.coordinates as GeoJSON.Position;
 
 	// Bindings
 	let mapElement: HTMLElement;
@@ -16,8 +40,8 @@
 
 	const populateMap = (map: google.maps.Map) => {
 		// Map borders overlay
-		console.log('hoggarn is', hoggarn);
-		const features = map.data.addGeoJson(hoggarn.features);
+		map.data.addGeoJson(loadedMap, { idPropertyName: 'id' });
+
 		const mapBorderStyle: google.maps.Data.StyleOptions = {
 			fillColor: 'red',
 			fillOpacity: 0.1,
@@ -28,23 +52,24 @@
 		map.data.setStyle(mapBorderStyle);
 		console.log('features styled');
 
-		// Marker
-		const markerPos = [59.370868, 18.289363];
-		console.log('creating marker');
+		// // Marker
+		// const markerPos = [59.370868, 18.289363];
+		// console.log('creating marker', google.maps);
 
-		const marker = new google.maps.marker.AdvancedMarkerElement({
-			map: map,
-			position: { lat: markerPos[0], lng: markerPos[1] },
-			title: 'Map feature'
-		});
-		console.log('marker created', marker);
+		// // @ts-ignore
+		// const marker = new markerLibrary.AdvancedMarkerElement({
+		// 	map: map,
+		// 	position: { lat: markerPos[0], lng: markerPos[1] },
+		// 	title: 'Map feature'
+		// });
+		// console.log('marker created', marker);
 	};
 
-	let mapCenter = $state({ lat: 59.3696333, lng: 18.2889347 });
+	let mapCenter = $state({ lat: center_lat, lng: center_long });
 
 	onMount(async function () {
 		const map = new google.maps.Map(mapElement, {
-			mapId: PUBLIC_GOOGLEMAPS_MAP_ID, // google.maps.Map.DEMO_MAP_ID,
+			mapId: PUBLIC_GOOGLEMAPS_MAP_ID,
 			center: mapCenter,
 			zoom: 16,
 			// panControl: false // show/hide pan ui overlay
